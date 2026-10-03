@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDGs 性別平權 - 第二關：情境題</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Bubblegum Sans & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Noto+Sans+TC:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+        }
+        .font-fun {
+            font-family: 'Bubblegum Sans', 'Noto Sans TC', cursive;
+        }
+        /* SVG Ferris Wheel Animation */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .ferris-wheel-spin {
+            animation: spinSlow 40s linear infinite;
+            transform-origin: 300px 220px;
+        }
+        /* Cloud Floating Animation */
+        @keyframes floatCloud {
+            0% { transform: translateX(-10%); }
+            50% { transform: translateX(10%); }
+            100% { transform: translateX(-10%); }
+        }
+        .animate-cloud {
+            animation: floatCloud 25s ease-in-out infinite;
+        }
+        /* Flower Pulse Effect */
+        @keyframes flowerBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        .flower-btn {
+            animation: flowerBounce 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+        .flower-btn:hover {
+            transform: scale(1.15) rotate(5deg) !important;
+            filter: drop-shadow(0 10px 15px rgba(236, 72, 153, 0.4));
+        }
+        /* Drag & Drop Styling */
+        .draggable-item {
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .drag-over {
+            border-color: #f43f5e !important;
+            background-color: rgba(254, 205, 211, 0.4) !important;
+            transform: scale(1.02);
+        }
+        /* Modal Animation */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-pop {
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative bg-gradient-to-b from-sky-300 via-indigo-100 to-amber-100 flex flex-col justify-between">
+
+    <!-- Amusement Park Background Graphic -->
+    <div class="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <svg class="w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Sky Gradients -->
+                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#7dd3fc"/>
+                    <stop offset="60%" stop-color="#bae6fd"/>
+                    <stop offset="100%" stop-color="#fef08a"/>
+                </linearGradient>
+                <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#86efac"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                </linearGradient>
+                <linearGradient id="castleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#f472b6"/>
+                    <stop offset="100%" stop-color="#c084fc"/>
+                </linearGradient>
+            </defs>
+
+            <!-- Background Sky -->
+            <rect width="1200" height="800" fill="url(#skyGrad)"/>
+
+            <!-- Clouds -->
+            <g class="animate-cloud" opacity="0.85">
+                <path d="M 100 120 Q 120 90 160 100 Q 190 80 230 100 Q 260 90 280 120 Z" fill="white"/>
+                <path d="M 800 90 Q 820 60 860 70 Q 890 50 930 70 Q 960 60 980 90 Z" fill="white"/>
+            </g>
+
+            <!-- Background Mountains & Hills -->
+            <path d="M -50 550 Q 200 420 450 550 T 950 550 T 1300 500 L 1300 800 L -50 800 Z" fill="#bbf7d0" opacity="0.7"/>
+
+            <!-- Roller Coaster Tracks -->
+            <path d="M 500 550 C 600 200, 700 650, 850 300 C 950 100, 1100 500, 1250 350" fill="none" stroke="#f43f5e" stroke-width="8" stroke-dasharray="12,6"/>
+            <path d="M 500 550 C 600 200, 700 650, 850 300 C 950 100, 1100 500, 1250 350" fill="none" stroke="#be123c" stroke-width="2"/>
+            <!-- Roller Coaster Pillars -->
+            <line x1="620" y1="360" x2="620" y2="580" stroke="#9f1239" stroke-width="4"/>
+            <line x1="750" y1="460" x2="750" y2="580" stroke="#9f1239" stroke-width="4"/>
+            <line x1="900" y1="230" x2="900" y2="580" stroke="#9f1239" stroke-width="4"/>
+            <line x1="1050" y1="380" x2="1050" y2="580" stroke="#9f1239" stroke-width="4"/>
+
+            <!-- Ferris Wheel Structure -->
+            <g id="ferris-wheel">
+                <!-- Main Support Stand -->
+                <polygon points="300,220 250,560 350,560" fill="#f59e0b"/>
+                <polygon points="300,220 270,560 330,560" fill="#d97706"/>
+                <!-- Wheel (Rotating) -->
+                <g class="ferris-wheel-spin">
+                    <circle cx="300" cy="220" r="150" fill="none" stroke="#38bdf8" stroke-width="6"/>
+                    <circle cx="300" cy="220" r="100" fill="none" stroke="#fbbf24" stroke-width="4"/>
+                    <!-- Spokes -->
+                    <line x1="300" y1="70" x2="300" y2="370" stroke="#38bdf8" stroke-width="3"/>
+                    <line x1="150" y1="220" x2="450" y2="220" stroke="#38bdf8" stroke-width="3"/>
+                    <line x1="194" y1="114" x2="406" y2="326" stroke="#38bdf8" stroke-width="3"/>
+                    <line x1="194" y1="326" x2="406" y2="114" stroke="#38bdf8" stroke-width="3"/>
+                    <!-- Cabins -->
+                    <circle cx="300" cy="70" r="16" fill="#ef4444"/>
+                    <circle cx="450" cy="220" r="16" fill="#3b82f6"/>
+                    <circle cx="300" cy="370" r="16" fill="#10b981"/>
+                    <circle cx="150" cy="220" r="16" fill="#f59e0b"/>
+                    <circle cx="395" cy="125" r="16" fill="#8b5cf6"/>
+                    <circle cx="395" cy="315" r="16" fill="#ec4899"/>
+                    <circle cx="205" cy="125" r="16" fill="#06b6d4"/>
+                    <circle cx="205" cy="315" r="16" fill="#84cc16"/>
+                </g>
+                <!-- Center Hub -->
+                <circle cx="300" cy="220" r="20" fill="#ea580c"/>
+                <circle cx="300" cy="220" r="10" fill="#fef08a"/>
+            </g>
+
+            <!-- Castle in Background -->
+            <g id="castle" transform="translate(50, 360)">
+                <rect x="50" y="80" width="120" height="120" fill="url(#castleGrad)"/>
+                <rect x="30" y="40" width="35" height="160" fill="url(#castleGrad)"/>
+                <rect x="155" y="40" width="35" height="160" fill="url(#castleGrad)"/>
+                <!-- Roof Cones -->
+                <polygon points="30,40 47.5,0 65,40" fill="#6366f1"/>
+                <polygon points="155,40 172.5,0 190,40" fill="#6366f1"/>
+                <polygon points="50,80 110,20 170,80" fill="#4338ca"/>
+                <!-- Castle Door & Windows -->
+                <path d="M 90 200 A 20 20 0 0 1 130 200 Z" fill="#78350f"/>
+                <rect x="42" y="70" width="12" height="20" rx="6" fill="#fef08a"/>
+                <rect x="167" y="70" width="12" height="20" rx="6" fill="#fef08a"/>
+            </g>
+
+            <!-- Carousel Silhouette -->
+            <g id="carousel" transform="translate(820, 440)">
+                <path d="M 10 70 L 100 10 L 190 70 Z" fill="#ec4899"/>
+                <rect x="20" y="70" width="160" height="12" fill="#facc15"/>
+                <line x1="40" y1="82" x2="40" y2="150" stroke="#cbd5e1" stroke-width="4"/>
+                <line x1="100" y1="82" x2="100" y2="150" stroke="#cbd5e1" stroke-width="4"/>
+                <line x1="160" y1="82" x2="160" y2="150" stroke="#cbd5e1" stroke-width="4"/>
+                <rect x="10" y="150" width="180" height="15" rx="5" fill="#f43f5e"/>
+            </g>
+
+            <!-- Foreground Green Grass Ground -->
+            <path d="M -20 540 Q 300 500 600 550 T 1220 520 L 1220 820 L -20 820 Z" fill="url(#grassGrad)"/>
+            
+            <!-- Path/Walkway -->
+            <path d="M 600 800 Q 580 680 500 620 T 400 560" fill="none" stroke="#fef08a" stroke-width="40" opacity="0.6"/>
+        </svg>
+    </div>
+
+    <!-- Top Bar Navigation / Header -->
+    <header class="relative z-10 w-full p-4 flex justify-between items-center bg-white/80 backdrop-blur-md shadow-lg rounded-b-2xl border-b-4 border-amber-300">
+        <!-- Title Left -->
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-3 rounded-2xl shadow-md flex items-center justify-center">
+                <i class="fa-solid fa-shapes text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-wide">SDGs 性別平權-情境題</h1>
+                <p class="text-xs md:text-sm font-semibold text-rose-500">第二關：點擊花朵探索情境題</p>
+            </div>
+        </div>
+
+        <!-- Score Right -->
+        <div class="bg-amber-100 border-2 border-amber-400 px-4 py-2 rounded-2xl shadow-inner flex items-center gap-2">
+            <i class="fa-solid fa-star text-amber-500 text-xl md:text-2xl animate-bounce"></i>
+            <span class="text-sm md:text-base font-bold text-amber-900">答對題數：</span>
+            <span id="score-display" class="font-fun text-2xl md:text-3xl font-extrabold text-rose-600">0 / 6</span>
+        </div>
+    </header>
+
+    <!-- Interactive Game Zone (Lower half where flowers appear) -->
+    <main id="flower-container" class="relative z-10 w-full flex-1 overflow-hidden pointer-events-auto">
+        <!-- Flowers will be rendered dynamically via JavaScript in random positions within the lower half -->
+    </main>
+
+    <!-- Question Set Modal (Popup) -->
+    <div id="question-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="modal-pop bg-white w-full max-w-4xl rounded-3xl shadow-2xl border-4 border-pink-300 overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-rose-400 to-pink-500 p-4 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🌸</span>
+                    <h2 id="modal-title" class="text-xl font-bold">情境題組挑戰</h2>
+                </div>
+                <button onclick="closeModal()" class="text-white hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center text-xl transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body: Drag and Drop Game Area -->
+            <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-rose-50/50 flex flex-col gap-6">
+                <p class="text-center text-slate-700 font-semibold text-sm md:text-base bg-white p-3 rounded-xl shadow-sm border border-rose-100">
+                    💡 <span class="text-rose-600">請將採集到的 2 個觀念或語句</span>，拖曳或點擊歸類至正確的框框中：
+                </p>
+
+                <!-- Source Items to Drag -->
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-center min-h-[90px]" id="source-items">
+                    <!-- Items rendered dynamically -->
+                </div>
+
+                <!-- Drop Targets Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <!-- Gender Equality Target Box -->
+                    <div id="target-equality" data-category="equality" 
+                         class="drop-target min-h-[180px] bg-emerald-50 border-3 border-dashed border-emerald-400 rounded-2xl p-4 flex flex-col items-center transition-all duration-200">
+                        <div class="flex items-center gap-2 text-emerald-700 font-extrabold text-lg mb-3">
+                            <i class="fa-solid fa-circle-check text-xl"></i>
+                            <span>性別平等 (Gender Equality)</span>
+                        </div>
+                        <div class="item-holder w-full flex-1 flex flex-col gap-2 justify-start items-center">
+                            <!-- Items dropped here -->
+                        </div>
+                    </div>
+
+                    <!-- Gender Inequality Target Box -->
+                    <div id="target-inequality" data-category="inequality" 
+                         class="drop-target min-h-[180px] bg-rose-50 border-3 border-dashed border-rose-400 rounded-2xl p-4 flex flex-col items-center transition-all duration-200">
+                        <div class="flex items-center gap-2 text-rose-700 font-extrabold text-lg mb-3">
+                            <i class="fa-solid fa-circle-xmark text-xl"></i>
+                            <span>性別不平等 (Inequality)</span>
+                        </div>
+                        <div class="item-holder w-full flex-1 flex flex-col gap-2 justify-start items-center">
+                            <!-- Items dropped here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="bg-slate-100 p-4 border-t border-slate-200 flex justify-between items-center">
+                <span id="modal-progress" class="text-xs md:text-sm text-slate-500 font-bold">已解答情境題</span>
+                <button id="submit-set-btn" onclick="checkCurrentSetAnswers()" 
+                        class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> 提交回答
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Result Modal -->
+    <div id="result-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="modal-pop bg-white w-full max-w-lg rounded-3xl shadow-2xl border-4 border-amber-300 p-6 md:p-8 text-center flex flex-col items-center relative overflow-hidden">
+            
+            <!-- Result Icon/Badge -->
+            <div id="result-badge" class="w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center text-5xl md:text-6xl mb-4 shadow-xl border-4 border-white">
+                🏆
+            </div>
+
+            <!-- Result Level Title -->
+            <h2 id="result-title" class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2"></h2>
+            
+            <!-- Result Score Info -->
+            <p id="result-score-text" class="text-base md:text-lg text-slate-600 font-medium mb-4">
+                你答對了 <span id="final-correct-count" class="text-rose-600 font-bold text-xl">0</span> / 6 題
+            </p>
+
+            <!-- Result Message -->
+            <p id="result-description" class="text-sm md:text-base text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-6 w-full">
+                詳細說明...
+            </p>
+
+            <!-- Action Buttons based on grade -->
+            <div id="result-actions" class="w-full flex justify-center gap-4">
+                <!-- Dynamic Button: Retry or Certificate -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question Sets (3 Sets, 2 Questions each = 6 Questions Total)
+        const questionSets = [
+            {
+                setId: 1,
+                title: "題組一：家庭與家務分工",
+                flowerColor: "#f43f5e", // Rose
+                items: [
+                    {
+                        id: "q1",
+                        text: "爸爸和媽媽一起分擔洗碗、掃地等居家家務",
+                        type: "equality"
+                    },
+                    {
+                        id: "q2",
+                        text: "認為「照顧小孩是媽媽一個人的責任」",
+                        type: "inequality"
+                    }
+                ]
+            },
+            {
+                setId: 2,
+                title: "題組二：職場與夢想發揮",
+                flowerColor: "#3b82f6", // Blue
+                items: [
+                    {
+                        id: "q3",
+                        text: "公司依據能力聘用員工，不分男女給予相同薪資待遇",
+                        type: "equality"
+                    },
+                    {
+                        id: "q4",
+                        text: "認為「女性升遷機會應該比男性少，因為未來會生育」",
+                        type: "inequality"
+                    }
+                ]
+            },
+            {
+                setId: 3,
+                title: "題組三：校園與興趣發展",
+                flowerColor: "#10b981", // Emerald
+                items: [
+                    {
+                        id: "q5",
+                        text: "鼓勵女生參加機器人社團，男生參加芭蕾舞社團",
+                        type: "equality"
+                    },
+                    {
+                        id: "q6",
+                        text: "嘲笑玩玩具娃娃的男生，認為「男生不該玩這個」",
+                        type: "inequality"
+                    }
+                ]
+            }
+        ];
+
+        // State Tracking Variables
+        let completedSets = new Set();
+        let totalCorrectAnswers = 0;
+        let currentSet = null;
+        let userSetAnswers = {}; // { qId: "equality" | "inequality" }
+
+        window.onload = function() {
+            renderRandomFlowers();
+            updateScoreUI();
+        };
+
+        // Render 3 Flowers in random locations within the lower half of screen
+        function renderRandomFlowers() {
+            const container = document.getElementById('flower-container');
+            container.innerHTML = '';
+
+            const containerWidth = container.clientWidth || window.innerWidth;
+            const containerHeight = container.clientHeight || (window.innerHeight * 0.6);
+
+            // Divide lower half into 3 horizontal sectors to prevent flower overlaps
+            const sectorWidth = containerWidth / 3;
+
+            questionSets.forEach((set, index) => {
+                // Calculate randomized X and Y inside designated sector
+                const minX = sectorWidth * index + 30;
+                const maxX = sectorWidth * (index + 1) - 90;
+                const randomX = Math.floor(Math.random() * (maxX - minX) + minX);
+
+                // Y-axis kept in lower portion (between 25% and 70% of lower container height)
+                const minY = containerHeight * 0.25;
+                const maxY = containerHeight * 0.65;
+                const randomY = Math.floor(Math.random() * (maxY - minY) + minY);
+
+                // Create Flower Element
+                const flowerDiv = document.createElement('div');
+                flowerDiv.id = `flower-set-${set.setId}`;
+                flowerDiv.className = 'flower-btn absolute cursor-pointer flex flex-col items-center group z-20';
+                flowerDiv.style.left = `${randomX}px`;
+                flowerDiv.style.top = `${randomY}px`;
+                flowerDiv.onclick = () => openQuestionModal(set);
+
+                const isCompleted = completedSets.has(set.setId);
+
+                flowerDiv.innerHTML = `
+                    <div class="relative flex items-center justify-center">
+                        <svg class="w-16 h-16 md:w-20 md:h-20 drop-shadow-lg" viewBox="0 0 100 100">
+                            <!-- Petals -->
+                            <g fill="${set.flowerColor}">
+                                <circle cx="50" cy="20" r="18" />
+                                <circle cx="80" cy="50" r="18" />
+                                <circle cx="50" cy="80" r="18" />
+                                <circle cx="20" cy="50" r="18" />
+                                <circle cx="29" cy="29" r="18" />
+                                <circle cx="71" cy="29" r="18" />
+                                <circle cx="71" cy="71" r="18" />
+                                <circle cx="29" cy="71" r="18" />
+                            </g>
+                            <!-- Center -->
+                            <circle cx="50" cy="50" r="20" fill="#fef08a" stroke="#f59e0b" stroke-width="4"/>
+                        </svg>
+                        ${isCompleted ? '<div class="absolute inset-0 bg-white/70 rounded-full flex items-center justify-center text-emerald-600 text-2xl font-bold"><i class="fa-solid fa-circle-check"></i></div>' : ''}
+                    </div>
+                    <span class="mt-1 bg-white/90 text-slate-800 text-xs md:text-sm font-bold px-3 py-1 rounded-full shadow border border-amber-200 group-hover:bg-amber-300 transition">
+                        ${set.title.split('：')[1]} ${isCompleted ? '(已完成)' : ''}
+                    </span>
+                `;
+
+                container.appendChild(flowerDiv);
+            });
+        }
+
+        function openQuestionModal(set) {
+            if (completedSets.has(set.setId)) {
+                showToast("您已經完成這個花朵的題組囉！");
+                return;
+            }
+
+            currentSet = set;
+            userSetAnswers = {};
+
+            document.getElementById('modal-title').innerText = set.title;
+            document.getElementById('modal-progress').innerText = `目前挑戰：${set.title}`;
+
+            const sourceContainer = document.getElementById('source-items');
+            const targetEquality = document.getElementById('target-equality').querySelector('.item-holder');
+            const targetInequality = document.getElementById('target-inequality').querySelector('.item-holder');
+
+            sourceContainer.innerHTML = '';
+            targetEquality.innerHTML = '';
+            targetInequality.innerHTML = '';
+
+            // Shuffle questions inside set
+            const shuffledItems = [...set.items].sort(() => Math.random() - 0.5);
+
+            shuffledItems.forEach(item => {
+                const itemEl = createDraggableCard(item);
+                sourceContainer.appendChild(itemEl);
+            });
+
+            setupDropZoneListeners();
+
+            document.getElementById('question-modal').classList.remove('hidden');
+        }
+
+        function createDraggableCard(item) {
+            const card = document.createElement('div');
+            card.id = `item-${item.id}`;
+            card.dataset.id = item.id;
+            card.draggable = true;
+            card.className = 'draggable-item w-full md:w-auto bg-white border-2 border-slate-200 hover:border-pink-400 p-3.5 rounded-2xl shadow-sm text-slate-800 text-sm md:text-base font-semibold flex items-center justify-between gap-3 cursor-grab active:scale-95 transition';
+            
+            card.innerHTML = `
+                <span>${item.text}</span>
+                <div class="flex items-center gap-1 text-slate-400">
+                    <button onclick="quickMove('${item.id}', 'equality')" class="hover:text-emerald-600 p-1 text-xs bg-emerald-50 rounded" title="移至性別平等">平等</button>
+                    <button onclick="quickMove('${item.id}', 'inequality')" class="hover:text-rose-600 p-1 text-xs bg-rose-50 rounded" title="移至性別不平等">不平等</button>
+                    <i class="fa-solid fa-grip-vertical text-slate-300 ml-1"></i>
+                </div>
+            `;
+
+            // Drag Start
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', item.id);
+                card.classList.add('opacity-50');
+            });
+
+            // Drag End
+            card.addEventListener('dragend', () => {
+                card.classList.remove('opacity-50');
+            });
+
+            return card;
+        }
+
+        // Quick Move for Click / Touch Device Support
+        function quickMove(itemId, targetCategory) {
+            const card = document.getElementById(`item-${itemId}`);
+            const targetBox = document.getElementById(`target-${targetCategory}`).querySelector('.item-holder');
+            if (card && targetBox) {
+                targetBox.appendChild(card);
+                userSetAnswers[itemId] = targetCategory;
+            }
+        }
+
+        function setupDropZoneListeners() {
+            const dropZones = document.querySelectorAll('.drop-target');
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    const itemId = e.dataTransfer.getData('text/plain');
+                    const card = document.getElementById(`item-${itemId}`);
+                    
+                    if (card) {
+                        const holder = zone.querySelector('.item-holder');
+                        holder.appendChild(card);
+                        userSetAnswers[itemId] = zone.dataset.category;
+                    }
+                });
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('question-modal').classList.add('hidden');
+        }
+
+        function checkCurrentSetAnswers() {
+            if (!currentSet) return;
+
+            // Check if both items are placed
+            const placedCount = Object.keys(userSetAnswers).length;
+            if (placedCount < currentSet.items.length) {
+                showToast("請將 2 個選項皆歸類完成後再提交喔！");
+                return;
+            }
+
+            let correctInSet = 0;
+            currentSet.items.forEach(item => {
+                if (userSetAnswers[item.id] === item.type) {
+                    correctInSet++;
+                }
+            });
+
+            totalCorrectAnswers += correctInSet;
+            completedSets.add(currentSet.setId);
+
+            updateScoreUI();
+            closeModal();
+            renderRandomFlowers(); // Re-render flowers with checkmarks
+
+            // Check if all 3 sets are finished (6 questions total)
+            if (completedSets.size === questionSets.length) {
+                setTimeout(showFinalResult, 600);
+            } else {
+                showToast(`完成了！此題組答對 ${correctInSet} / 2 題`);
+            }
+        }
+
+        function updateScoreUI() {
+            document.getElementById('score-display').innerText = `${totalCorrectAnswers} / 6`;
+        }
+
+        function showFinalResult() {
+            const resultModal = document.getElementById('result-modal');
+            const badge = document.getElementById('result-badge');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-description');
+            const actions = document.getElementById('result-actions');
+            const countText = document.getElementById('final-correct-count');
+
+            countText.innerText = totalCorrectAnswers;
+
+            if (totalCorrectAnswers <= 3) {
+                // Level: 再加油
+                badge.className = "w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center text-5xl md:text-6xl mb-4 shadow-xl border-4 border-white bg-amber-100 text-amber-600";
+                badge.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+                title.innerText = "等級：再加油！";
+                title.className = "text-2xl md:text-3xl font-extrabold text-amber-600 mb-2";
+                desc.innerText = "對於性別平權的概念還能更進一步喔！點擊下方按鈕重新載入網頁再試一次吧！";
+                
+                actions.innerHTML = `
+                    <button onclick="location.reload()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> 再次挑戰
+                    </button>
+                `;
+            } else if (totalCorrectAnswers <= 5) {
+                // Level: 進步中
+                badge.className = "w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center text-5xl md:text-6xl mb-4 shadow-xl border-4 border-white bg-blue-100 text-blue-600";
+                badge.innerHTML = '<i class="fa-solid fa-thumbs-up"></i>';
+                title.innerText = "等級：進步中！";
+                title.className = "text-2xl md:text-3xl font-extrabold text-blue-600 mb-2";
+                desc.innerText = "非常棒！你對多數性別平權情境已有正確認知，差一點就能達到滿分平權達人了！";
+
+                actions.innerHTML = `
+                    <button onclick="location.reload()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> 再次挑戰
+                    </button>
+                `;
+            } else {
+                // Level: 平權達人 (6分全對)
+                badge.className = "w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center text-5xl md:text-6xl mb-4 shadow-xl border-4 border-white bg-emerald-100 text-emerald-600";
+                badge.innerHTML = '<i class="fa-solid fa-award"></i>';
+                title.innerText = "等級：平權達人！";
+                title.className = "text-2xl md:text-3xl font-extrabold text-emerald-600 mb-2";
+                desc.innerText = "恭喜你全數答對！你展現了極佳的 SDGs 性別平等意識，點擊下方下載專屬學習證書！";
+
+                actions.innerHTML = `
+                    <a href="certificate.html" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2 text-center">
+                        <i class="fa-solid fa-file-certificate"></i> 下載學習證書
+                    </a>
+                `;
+            }
+
+            resultModal.classList.remove('hidden');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-800/90 text-white font-semibold px-6 py-3 rounded-full shadow-2xl z-50 transition transform duration-300 text-sm md:text-base border border-slate-700';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
